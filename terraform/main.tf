@@ -37,12 +37,35 @@ resource "google_compute_instance" "default" {
  metadata_startup_script = "sudo apt-get update; sudo apt-get install -yq; sudo snap install microk8s --classic; sudo usermod -a -G microk8s $(whoami); sudo chown -f -R $(whoami) ~/.kube"
 
  network_interface {
-   network = "default"
+   network = google_compute_network.mca-net.name
 
    access_config {
      // Include this section to give the VM an external ip address
+     nat_ip = google_compute_address.static.address
    }
  }
+}
+
+resource "google_compute_address" "static" {
+  name = "ipv4-address"
+}
+
+resource "google_compute_firewall" "mca-fw" {
+  name    = "mca-firewall"
+  network = google_compute_network.mca-net.name
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "80", "8080", "443"]
+  }
+}
+
+resource "google_compute_network" "mca-net" {
+  name = "mca-network"
 }
 
 output "public-ip" {

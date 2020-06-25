@@ -1,0 +1,70 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: practica-cd
+spec:
+  rules:
+  - host: practica-cd.mca.ethcero.es
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: practica-cd
+          servicePort: 8080
+  tls:
+  - hosts:
+    - practica-cd.mca.ethcero.es
+    secretName: practica-cd-tls-secret
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: practica-cd
+  name: practica-cd
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: practica-cd
+  type: ClusterIP
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: practica-cd
+  name: practica-cd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: practica-cd
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: practica-cd
+    spec:
+      containers:
+      - name: java-app
+        image: franco87/practica-ci:0.0.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        - containerPort: 8443
