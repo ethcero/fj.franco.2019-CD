@@ -1,0 +1,21 @@
+
+name: deploy release
+
+on: repository_dispatch
+
+jobs:
+  deployment:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Creating SSH tunnel
+      run: |
+        ssh mca@practica-cd.mca.ethcero.es -f -L 16443:localhost:16443 -N
+    - name: Deploy
+      uses: actions-hub/kubectl@master
+      env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+      with:
+        args: get pods
