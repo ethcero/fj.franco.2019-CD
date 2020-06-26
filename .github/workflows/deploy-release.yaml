@@ -10,18 +10,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    services:
-      ssh:
-        image: franco87/ubuntu-ssh
-        ports:
-          - 16443:16443
-        env:
-          TARGET_HOST: ${{ secrets.TARGET_HOST }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ENTRYPOINT_CMD: "ssh-add - $SSH_PRIVATE_KEY && ssh mca@$TARGET_HOST -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
-
     steps:
     - uses: actions/checkout@v2
+    - name: ssh proxy
+      run: |
+        ssh-add - ${{ secrets.SSH_PRIVATE_KEY }} && ssh mca@${{ secrets.TARGET_HOST }} -f -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\"
     - name: set kubeconfig
       run: |
         echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > /tmp/kubeconfig
