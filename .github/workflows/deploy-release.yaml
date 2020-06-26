@@ -12,20 +12,17 @@ jobs:
 
     services:
       ssh:
-        image: busybox
+        image: ubuntu
         options: >-
-          --entrypoint="ssh mca@$TARGET_HOST -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
+          --entrypoint="ssh-add - $SSH_PRIVATE_KEY && ssh mca@$TARGET_HOST -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
         ports:
           - 16443:16443
         env:
           TARGET_HOST: ${{ secrets.TARGET_HOST }}
-
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     steps:
     - uses: actions/checkout@v2
-    - uses: webfactory/ssh-agent@v0.4.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Deploy
       uses: actions-hub/kubectl@master
       env:
