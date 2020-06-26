@@ -1,7 +1,9 @@
 
 name: deploy release
 
-on: repository_dispatch
+on:
+  repository_dispatch:
+    types: [opened]
 
 jobs:
   deployment:
@@ -10,9 +12,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: webfactory/ssh-agent@v0.4.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Creating SSH tunnel
       run: |
-        ssh mca@practica-cd.mca.ethcero.es -f -L 16443:localhost:16443 -N
+        ssh mca@${{ secrets.TARGET_HOST }} -f -L 16443:localhost:16443 -N -o "StrictHostKeyChecking no"
     - name: Deploy
       uses: actions-hub/kubectl@master
       env:
