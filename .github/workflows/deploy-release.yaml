@@ -24,7 +24,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: set kubeconfig
       run: |
-        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ${KUBECONFIG}
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > /tmp/kubeconfig
     - name: Deploy
       run: |
-        kubectl get pods
+        kubectl --kubeconfig)/tmp/kubeconfig get pods
