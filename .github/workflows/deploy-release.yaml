@@ -12,14 +12,13 @@ jobs:
 
     services:
       ssh:
-        image: ubuntu
-        options: >-
-          --entrypoint="ssh-add - $SSH_PRIVATE_KEY && ssh mca@$TARGET_HOST -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
+        image: franco87/ubuntu-ssh
         ports:
           - 16443:16443
         env:
           TARGET_HOST: ${{ secrets.TARGET_HOST }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ENTRYPOINT_CMD: "ssh-add - $SSH_PRIVATE_KEY && ssh mca@$TARGET_HOST -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
 
     steps:
     - uses: actions/checkout@v2
