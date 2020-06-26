@@ -25,7 +25,7 @@ jobs:
         kubectl --kubeconfig=/tmp/kubeconfig set image deployment/practica-cd java-app=${{ github.event.client_payload.new_image }}
     - name: Watch rolling update status
       run: |
-        kubectl --kubeconfig=/tmp/kubeconfig rollout status -w deployment/practica-cd --timeout=30s
+        kubectl --kubeconfig=/tmp/kubeconfig rollout status -w deployment/practica-cd --timeout=120s
     - name: rollback
       if: ${{ failure() }}
       run: |
