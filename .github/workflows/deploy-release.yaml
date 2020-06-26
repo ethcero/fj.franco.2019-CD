@@ -27,4 +27,4 @@ jobs:
         echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > /tmp/kubeconfig
     - name: Deploy
       run: |
-        kubectl --kubeconfig)/tmp/kubeconfig get pods
+        kubectl --kubeconfig=/tmp/kubeconfig get pods
