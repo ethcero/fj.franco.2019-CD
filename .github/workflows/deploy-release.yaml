@@ -14,9 +14,12 @@ jobs:
       ssh:
         image: busybox
         options: >-
-          --entrypoint	"ssh mca@${{ secrets.TARGET_HOST }} -f -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
+          --entrypoint	"ssh mca@$TARGET_HOST -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
         ports:
           - 16443:16443
+        env:
+          TARGET_HOST: ${{ secrets.TARGET_HOST }}
+
 
     steps:
     - uses: actions/checkout@v2
