@@ -10,14 +10,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      ssh:
+        image: busybox
+        options: >-
+          --entrypoint	"ssh mca@${{ secrets.TARGET_HOST }} -f -L 16443:localhost:16443 -N -o \"StrictHostKeyChecking no\""
+        ports:
+          - 16443:16443
+
     steps:
     - uses: actions/checkout@v2
     - uses: webfactory/ssh-agent@v0.4.0
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: Creating SSH tunnel
-      run: |
-        ssh mca@${{ secrets.TARGET_HOST }} -f -L 16443:localhost:16443 -N -o "StrictHostKeyChecking no"
     - name: Deploy
       uses: actions-hub/kubectl@master
       env:
