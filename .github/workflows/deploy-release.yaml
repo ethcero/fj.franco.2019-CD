@@ -23,6 +23,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: set kubeconfig
-      run: echo ${{ secrets.KUBE_CONFIG }} | base64 -d > ${KUBECONFIG}
+      run: |
+        echo ${{ secrets.KUBE_CONFIG }} | base64 -d > ${KUBECONFIG}
     - name: Deploy
-      run: kubectl get pods
+      run: |
+        kubectl get pods
