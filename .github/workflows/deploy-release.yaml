@@ -22,4 +22,7 @@ jobs:
         echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > /tmp/kubeconfig
     - name: Deploy
       run: |
-        kubectl --kubeconfig=/tmp/kubeconfig get pods
+        kubectl --kubeconfig=/tmp/kubeconfig set image deployment/practica-cd java-app=${{ github.event.client_payload.new_image }}
+    - name: Watch rolling update status
+      run: |
+        kubectl --kubeconfig=/tmp/kubeconfig rollout status -w deployment/practica-cd
