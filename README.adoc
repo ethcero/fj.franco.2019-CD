@@ -20,17 +20,15 @@ Se continua la práctica de CI integrando un workflow de despliegue continuo.
 
 Se ha creado un script de Terraform para desplegar un servidor en el cloud de Google donde se instala Microk8s como plataforma de Kuberentes.
 
-
-
 El script de Terraform no está integrado dentro del proceso de despliegue continuo. Solamente se ha lanzado de manera manual para inicializar el entorno.
 
-Se asume que se deben extraer las credenciales de Kubernetes para poder accecer al API de k8s ejecutando dentro del servidor el comando `microk8s.config`. estas credenciales se han configurado como **secreto** en el repositorio de CD.
+Se asume que se deben extraer las credenciales de Kubernetes para poder acceder al API de k8s ejecutando dentro del servidor el comando `microk8s.config`. estas credenciales se han configurado como **secreto** en el repositorio de CD.
 
 #### Flujo de despliegue
 
 El proceso de despliegue se inicia cuando se crea una nueva release en el repositorio principal de la aplicación (https://github.com/franco87/fj.franco.2019-CI).
 
-Ell workflow `release-master.yaml` de CI, tras compilar y subir el artefacto a Dockerhub, ejecuta una llamada al API de GitHub creando un evento `dispatch` en el repositorio de CD adjuntando los datos de la nueva imagen generada en el proceso de construcción.
+El workflow `release-master.yaml` de CI, tras compilar y subir el artefacto a Dockerhub, ejecuta una llamada al API de GitHub creando un evento `dispatch` en el repositorio de CD adjuntando los datos de la nueva imagen generada en el proceso de construcción.
 
 El workflow `deploy-release.yaml` de CD espera un evento `repository_dispatch` del tipo `deploy_application` y comienza el ciclo de despliegue.
 
