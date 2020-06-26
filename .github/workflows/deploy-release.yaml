@@ -26,3 +26,7 @@ jobs:
     - name: Watch rolling update status
       run: |
         kubectl --kubeconfig=/tmp/kubeconfig rollout status -w deployment/practica-cd
+    - name: rollback
+      if: ${{ failure() }}
+      run: |
+        kubectl --kubeconfig=/tmp/kubeconfig rollout undo -w deployment/practica-cd
