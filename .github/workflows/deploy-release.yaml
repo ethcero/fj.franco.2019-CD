@@ -3,7 +3,7 @@ name: deploy release
 
 on:
   repository_dispatch:
-    types: [opened]
+    types: [build_application]
 
 jobs:
   deployment:
